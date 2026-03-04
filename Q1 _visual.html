@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wealth & Education Explorer</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: sans-serif; }
+        .axis-label { font-size: 12px; }
+        .tooltip {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 6px;
+            font-size: 12px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<h2>Wealth and Education: Country-Level Relationships</h2>
+
+<label for="indicator-select">Education indicator:</label>
+<select id="indicator-select">
+    <option value="Adult Literacy Rate (%)">Adult Literacy Rate (%)</option>
+    <option value="Primary School Completion Rate (%)">Primary School Completion Rate (%)</option>
+    <option value="% of GDP Spent On Education">% of GDP Spent On Education</option>
+    <option value="Primary School Enrollment (%)">Primary School Enrollment (%)</option>
+    <option value="Secondary School Enrollment (%)">Secondary School Enrollment (%)</option>
+    <option value="Tertiary School Enrollment (%)">Tertiary School Enrollment (%)</option>
+    <option value="Primary Pupil-Teacher Ratio">Primary Pupil-Teacher Ratio</option>
+    <option value="Secondary Pupil-Teacher Ratio">Secondary Pupil-Teacher Ratio</option>
+</select>
+
+<label for="year-select">Year:</label>
+<select id="year-select"></select>
+
+<svg id="chart" width="900" height="550"></svg>
+<div id="tooltip" class="tooltip" style="opacity:0;"></div>
+
+<script>
+    const svg = d3.select("#chart");
+    const margin = { top: 40, right: 40, bottom: 60, left: 80 };
+    const width = +svg.attr("width") - margin.left - margin.right;
+    const height = +svg.attr("height") - margin.top - margin.bottom;
+
+    const g = svg.append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const xScale = d3.scaleLinear().range([0, width]);
+    const yScale = d3.scaleLinear().range([height, 0]);
+    const color = d3.scaleOrdinal(d3.schemeTableau10);
+
+    const xAxisGroup = g.append("g")
+        .attr("transform", `translate(0,${height})`);
+    const yAxisGroup = g.append("g");
+
+    const xLabel = g.append("text")
+        .attr("class", "axis-label")
+        .attr("x", width / 2)
+        .attr("y", height + 40)
+        .attr("text-anchor", "middle")
+        .text("Wealth Index (0–100)");
+
+    const yLabel = g.append("text")
+        .attr("class", "axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -55)
+        .attr("text-anchor", "middle");
+
+    const tooltip = d3.select("#tooltip");
+
+    const indicatorSelect = d3.select("#indicator-select");
+    const yearSelect = d3.select("#year-select");
+
+    let data;
+
+    d3.csv("combined_dataset.csv").then(raw => {
+        // Coerce numeric columns
+        raw.forEach(d => {
+            d.Year = +d.Year;
+            d["Wealth Index"] = +d["Wealth Index"];
+            d["GINI Index"] = d["GINI Index"] ? +d["GINI Index"] : null;
+
+            d["% of GDP Spent On Education"] = +d["% of GDP Spent On Education"];
+            d["Adult Literacy Rate (%)"] = +d["Adult Literacy Rate (%)"];
+            d["Primary School Completion Rate (%)"] = +d["Primary School Completion Rate (%)"];
+            d["Primary School Enrollment (%)"] = +d["Primary School Enrollment (%)"];
+            d["Secondary School Enrollment (%)"] = +d["Secondary School Enrollment (%)"];
+            d["Tertiary School Enrollment (%)"] = +d["Tertiary School Enrollment (%)"];
+            d["Primary Pupil-Teacher Ratio"] = +d["Primary Pupil-Teacher Ratio"];
+            d["Secondary Pupil-Teacher Ratio"] = +d["Secondary Pupil-Teacher Ratio"];
+        });
+
+        data = raw;
+
+        // Populate year dropdown
+        const years = Array.from(new Set(data.map(d => d.Year))).sort((a, b) => a - b);
+        yearSelect
+            .selectAll("option")
+            .data(years)
+            .enter()
+            .append("option")
+            .attr("value", d => d)
+            .text(d => d);
+
+        yearSelect.property("value", years[years.length - 1]); // latest year
+
+        // Color by continent/region if available, else default
+        const regions = Array.from(new Set(data.map(d => d.Continent || d.Region || "Other")));
+        color.domain(regions);
+
+        indicatorSelect.on("change", update);
+        yearSelect.on("change", update);
+
+        update();
+    });
+
+    function update() {
+        const indicator = indicatorSelect.property("value");
+        const year = +yearSelect.property("value");
+
+        const filtered = data.filter(d =>
+            d.Year === year &&
+            !isNaN(d["Wealth Index"]) &&
+            !isNaN(d[indicator])
+        );
+
+        if (!filtered.length) return;
+
+        xScale.domain(d3.extent(filtered, d => d["Wealth Index"])).nice();
+        yScale.domain(d3.extent(filtered, d => d[indicator])).nice();
+
+        xAxisGroup.call(d3.axisBottom(xScale));
+        yAxisGroup.call(d3.axisLeft(yScale));
+
+        yLabel.text(indicator);
+
+        const circles = g.selectAll("circle")
+            .data(filtered, d => d["Country"] + d.Year);
+
+        circles.exit().remove();
+
+        circles.enter()
+            .append("circle")
+            .attr("r", 4)
+            .attr("cx", d => xScale(d["Wealth Index"]))
+            .attr("cy", d => yScale(d[indicator]))
+            .attr("fill", d => color(d.Continent || d.Region || "Other"))
+            .on("mouseover", (event, d) => {
+                tooltip
+                    .style("opacity", 1)
+                    .html(`
+              <strong>${d.Country}</strong><br/>
+              Year: ${d.Year}<br/>
+              Wealth Index: ${d["Wealth Index"].toFixed(1)}<br/>
+              ${indicator}: ${d[indicator].toFixed(1)}
+            `)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mousemove", (event) => {
+                tooltip
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", () => {
+                tooltip.style("opacity", 0);
+            })
+            .merge(circles)
+            .transition()
+            .duration(600)
+            .attr("cx", d => xScale(d["Wealth Index"]))
+            .attr("cy", d => yScale(d[indicator]));
+    }
+</script>
+</body>
+</html>
