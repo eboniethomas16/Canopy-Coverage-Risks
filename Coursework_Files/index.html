@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- D3 -->
+  <script src="https://d3js.org/d3.v6.js"></script>
+
+
+
+  <!-- Your JS files -->
+  <script src="js/chart.js" defer></script>
+  <script src="js/layout.js" defer></script>
+</head>
+
+<body>
+
+<div id="viz-wrapper">
+
+  <!-- Title -->
+  <div id="viz-title">Analyse the Relation Between Wealth And Education Indicators</div>
+
+  <!-- Main visualization container -->
+  <div id="my_dataviz-container">
+    <!-- ONE SVG for BOTH map + bubble chart -->
+<!--    <svg id="main-svg"></svg>-->
+
+    <!-- SVG goes here -->
+    <svg id="my_dataviz"></svg>
+
+    <!-- LEGEND (must exist for D3 to populate it) -->
+    <svg id="legend"></svg>
+
+    <!-- Indicator dropdown (inside container, positioned under legend) -->
+    <div id="indicator-container">
+      <select id="indicator-select">
+        <option value="Adult Literacy Rate %">Adult Literacy Rate (%)</option>
+        <option value="% of GDP Spent On Education">% of GDP Spent On Education</option>
+        <option value="Primary School Completion Rate %">Primary School Completion Rate (%)</option>
+        <option value="Primary Pupil-Teacher Ratio">Primary Pupil-Teacher Ratio</option>
+        <option value="Secondary Pupil-Teacher Ratio">Secondary Pupil-Teacher Ratio</option>
+        <option value="Primary School Enrollment %">Primary School Enrollment (%)</option>
+        <option value="Secondary School Enrollment %">Secondary School Enrollment (%)</option>
+        <option value="Tertiary School Enrollment %">Tertiary School Enrollment (%)</option>
+      </select>
+    </div>
+
+
+
+    <!-- Reset button -->
+    <div id="reset-button-container">
+      <button id="reset-selection">Reset Selections</button>
+    </div>
+
+    <div id="toggle-Colors-container">
+    <button id="toggleColors">Toggle Color-Blind Colors</button>
+    </div>
+
+  </div> <!-- end my_dataviz-container -->
+  <!-- Year slider (belongs inside the same container) -->
+  <div id="slider-container">
+
+  <button id="play-button">▶ Play</button>
+  <div id="slider-title">Select Year</div>
+  <input id="year-slider" type="range">
+  <span id="year-value"></span>
+  </div>
+
+
+
+</div> <!-- end viz-wrapper -->
+
+</body>
+</html>
+
+

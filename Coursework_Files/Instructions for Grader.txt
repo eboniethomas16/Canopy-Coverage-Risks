@@ -1,0 +1,8 @@
+Files that drive the visualization:
+index.html <--- Run this in webstorm
+css > styles.css
+js > chart.js
+js > layout.js
+
+Main Dataset that drives visuals:
+data > Wealth-GINI-Education_Data
