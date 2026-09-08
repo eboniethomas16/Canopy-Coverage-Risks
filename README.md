@@ -7,7 +7,7 @@ By combining spatial maps, borough-level metrics, and correlation analyses, the 
 🖼️ Screenshot
 (Embed your dashboard screenshot here)  
 Example placeholder:  
-![Dashboard Screenshot](Group Project Screenshot.png)
+![Dashboard Screenshot]([Group Project Screenshot.png](https://github.com/eboniethomas16/Canopy-Coverage-Risks/blob/main/Dashboard_Screenshot.png?raw=true))
 
 🔗 Link to Tableau Public
 Access the full interactive dashboard here:
