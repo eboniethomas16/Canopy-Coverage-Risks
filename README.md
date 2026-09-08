@@ -5,16 +5,12 @@ This dashboard explores how climate-related risks—specifically building heat e
 By combining spatial maps, borough-level metrics, and correlation analyses, the dashboard provides a visual narrative of how urban greenery intersects with climate resilience. It highlights which boroughs face the greatest risks, which benefit from higher canopy coverage, and where strategic green infrastructure could improve livability.
 
 🖼️ Screenshot
-(Embed your dashboard screenshot here)  
-Example placeholder:  
-![Dashboard Screenshot]([Group Project Screenshot.png](https://github.com/eboniethomas16/Canopy-Coverage-Risks/blob/main/Dashboard_Screenshot.png?raw=true))
-
 <img width="1465" height="1017" alt="Dashboard_Screenshot" src="https://github.com/user-attachments/assets/b162d238-4811-4d92-87ef-ae0180e9f6f8" />
 
 
 🔗 Link to Tableau Public
 Access the full interactive dashboard here:
-[Insert Tableau Public Link]
+(https://public.tableau.com/views/CanopyCoverageandtheRiskofBuildingHeatandFloodRiskinLondon/CanopyxHeatMap?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
 
 📊 Data Sources
 This dashboard is built using publicly available London environmental datasets, including:
