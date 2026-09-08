@@ -7,7 +7,7 @@ By combining spatial maps, borough-level metrics, and correlation analyses, the 
 🖼️ Screenshot
 (Embed your dashboard screenshot here)  
 Example placeholder:  
-![Dashboard Screenshot](insert-image-path-here.png)
+![Dashboard Screenshot](Group Project Screenshot.png)
 
 🔗 Link to Tableau Public
 Access the full interactive dashboard here:
